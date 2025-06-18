@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoMeet - Modern Video Conferencing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --primary-dark: #3a56d4;
+            --secondary: #f0f2ff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --background: #f8fafc;
+            --white: #ffffff;
+            --error: #e53e3e;
+            --success: #38a169;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        .options-container {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .option-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 350px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background-color: var(--secondary);
+        }
+
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .option-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .action-container {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .action-container.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary);
+        }
+
+        .meeting-link-container {
+            display: none;
+            margin-top: 2rem;
+            background-color: var(--secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .meeting-link-container.active {
+            display: block;
+        }
+
+        .link-display {
+            display: flex;
+            margin-top: 1rem;
+        }
+
+        .link-display input {
+            flex-grow: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            background-color: var(--white);
+        }
+
+        .copy-btn {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 0 1rem;
+        }
+
+        .participant-requests {
+            display: none;
+            margin-top: 2rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .participant-requests.active {
+            display: block;
+        }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: var(--white);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .success-message {
+            color: var(--success);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .success-message.active {
+            display: block;
+        }
+
+        .error-message {
+            color: var(--error);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        #jitsi-container {
+            width: 100%;
+            height: 600px;
+            display: none;
+            margin-top: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn {
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .back-btn.active {
+            display: inline-flex;
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                flex-direction: column;
+            }
+
+            .option-card {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-video"></i>
+                <span>VideoMeet</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <button id="backBtn" class="btn btn-secondary back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+
+            <h1>Start or Join a Video Meeting</h1>
+            <p class="subtitle">
+                Connect with your team, friends, or family with our secure and easy-to-use video conferencing platform.
+            </p>
+
+            <div class="options-container">
+                <div class="option-card" id="createOption">
+                    <div class="option-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3 class="option-title">Create Meeting</h3>
+                    <p class="option-description">
+                        Start a new meeting and invite participants. You'll be the moderator with full control over the session.
+                    </p>
+                </div>
+
+                <div class="option-card" id="joinOption">
+                    <div class="option-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3 class="option-title">Join Meeting</h3>
+                    <p class="option-description">
+                        Join an existing meeting by entering the meeting ID or link. You'll need approval from the moderator.
+                    </p>
+                </div>
+            </div>
+
+            <div class="action-container" id="createMeetingContainer">
+                <h2>Create New Meeting</h2>
+                <p>Set up your meeting preferences</p>
+
+                <div class="form-group">
+                    <label for="meetingName">Meeting Name</label>
+                    <input type="text" id="meetingName" placeholder="Enter a name for your meeting">
+                </div>
+
+                <div class="form-group">
+                    <label for="yourName">Your Name</label>
+                    <input type="text" id="yourName" placeholder="Enter your name">
+                </div>
+
+                <button id="startMeetingBtn" class="btn">
+                    <i class="fas fa-video"></i> Start Meeting
+                </button>
+
+                <div class="meeting-link-container" id="meetingLinkContainer">
+                    <p>Share this meeting link with participants:</p>
+                    <div class="link-display">
+                        <input type="text" id="meetingLink" readonly>
+                        <button id="copyLinkBtn" class="btn copy-btn">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p class="success-message" id="copySuccessMsg">Link copied to clipboard!</p>
+                </div>
+
+                <div class="participant-requests" id="participantRequests">
+                    <h3>Participant Requests</h3>
+                    <div id="requestsList"></div>
+                </div>
+            </div>
+
+            <div class="action-container" id="joinMeetingContainer">
+                <h2>Join Existing Meeting</h2>
+                <p>Enter the meeting details to request access</p>
+
+                <div class="form-group">
+                    <label for="meetingLinkInput">Meeting Link or ID</label>
+                    <input type="text" id="meetingLinkInput" placeholder="Paste meeting link or ID">
+                </div>
+
+                <div class="form-group">
+                    <label for="participantName">Your Name</label>
+                    <input type="text" id="participantName" placeholder="Enter your name">
+                </div>
+
+                <button id="requestJoinBtn" class="btn">
+                    <i class="fas fa-user-plus"></i> Request to Join
+                </button>
+
+                <p class="error-message" id="joinErrorMsg">Please enter both meeting link and your name</p>
+                <p class="error-message" id="requestPendingMsg">Your request has been sent to the moderator. Please wait for approval.</p>
+            </div>
+
+            <div id="jitsi-container"></div>
+        </main>
+
+        <footer>
+            <p>© 2023 VideoMeet. Secure video conferencing powered by Jitsi.</p>
+        </footer>
+    </div>
+    <script>
+    const config = {
+        websocketUrl: 'ws://localhost:3001',
+        jitsiDomain: 'meet.jit.si'
+    };
+</script>
+
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
